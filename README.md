@@ -12,7 +12,7 @@
 ~~~
 ~~~
 	dependencies {
-	        compile 'com.github.Mr-wangyong:FragmentStack:v1.0.0'
+	        compile 'com.github.Mr-wangyong:ImageFrame:v1.0.0'
 	}
 ~~~
 
