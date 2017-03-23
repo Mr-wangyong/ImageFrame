@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+// JitPack Maven
+// Your Group
+group='com.github.ImageFrames'
 
 android {
     compileSdkVersion 25
