@@ -1,10 +1,13 @@
 package com.example.imageframelibs.ImageFrame;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.RawRes;
 
 import static android.graphics.BitmapFactory.decodeFile;
+import static android.graphics.BitmapFactory.decodeStream;
 
 /**
  * User: chengwangyong(chengwangyong@blinnnk.com)
@@ -14,8 +17,8 @@ import static android.graphics.BitmapFactory.decodeFile;
 public class BitmapLoadUtils {
 
   public static BitmapDrawable decodeSampledBitmapFromFile(String filename,
-                                                           int reqWidth, int reqHeight,
-                                                           ImageCache cache) {
+      int reqWidth, int reqHeight,
+      ImageCache cache) {
 
     final BitmapFactory.Options options = new BitmapFactory.Options();
     options.inJustDecodeBounds = true;
@@ -31,7 +34,32 @@ public class BitmapLoadUtils {
       // If we're running on Honeycomb or newer, try to use inBitmap.
       options.inJustDecodeBounds = false;
       bitmapFromCache = new BitmapDrawable(BitmapFactory.decodeFile(filename, options));
-			cache.addBitmap(filename,bitmapFromCache);
+      cache.addBitmap(filename, bitmapFromCache);
+    }
+    return bitmapFromCache;
+  }
+
+  public static BitmapDrawable decodeSampledBitmapFromRes(Resources resources, @RawRes int resId,
+      int reqWidth, int reqHeight,
+      ImageCache cache) {
+
+    final BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inJustDecodeBounds = true;
+    decodeStream(resources.openRawResource(resId),null,options);
+    options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+    String resourceName = resources.getResourceName(resId);
+    BitmapDrawable bitmapFromCache = cache.getBitmapFromCache(resourceName);
+    if (bitmapFromCache == null) {
+      // if (Utils.hasHoneycomb()) {
+      addInBitmapOptions(options, cache);
+      // }
+      // If we're running on Honeycomb or newer, try to use inBitmap.
+      options.inJustDecodeBounds = false;
+      bitmapFromCache =
+          new BitmapDrawable(resources,
+              decodeStream(resources.openRawResource(resId),null,options));
+      cache.addBitmap(resourceName, bitmapFromCache);
     }
     return bitmapFromCache;
   }
@@ -39,6 +67,9 @@ public class BitmapLoadUtils {
   public static int calculateInSampleSize(
       BitmapFactory.Options options, int reqWidth, int reqHeight) {
     // 原始图片的宽高
+    if (reqHeight == 0 || reqWidth == 0) {
+      return 1;
+    }
     final int height = options.outHeight;
     final int width = options.outWidth;
     int inSampleSize = 1;
