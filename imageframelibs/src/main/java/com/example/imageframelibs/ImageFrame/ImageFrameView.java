@@ -66,6 +66,15 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
     super(context, attrs, defStyleAttr);
   }
 
+  /**
+   * load frame form file directory;
+   * 
+   * @param width request width
+   * @param height request height
+   * @param fileDir file directory
+   * @param fps The number of broadcast images per second
+   * @param onPlayFinish finish callback
+   */
   public void loadImage(final String fileDir, int width, int height, int fps,
       OnPlayFinish onPlayFinish) {
     this.width = width;
@@ -73,6 +82,13 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
     loadImage(fileDir, fps, onPlayFinish);
   }
 
+  /**
+   * load frame form file directory;
+   * 
+   * @param fileDir file directory
+   * @param fps The number of broadcast images per second
+   * @param onPlayFinish finish callback
+   */
   public void loadImage(final String fileDir, int fps, OnPlayFinish onPlayFinish) {
     if (!TextUtils.isEmpty(fileDir) && fps > 0) {
       Log.d(TAG, "run() called Thread=" + Thread.currentThread().getName());
@@ -84,6 +100,15 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
     }
   }
 
+  /**
+   * load frame form file files Array;
+   * 
+   * @param width request width
+   * @param height request height
+   * @param files files Array
+   * @param fps The number of broadcast images per second
+   * @param onPlayFinish finish callback
+   */
   public void loadImage(final File[] files, int width, int height, int fps,
       OnPlayFinish onPlayFinish) {
     this.width = width;
@@ -92,6 +117,13 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
   }
 
 
+  /**
+   * load frame form file files Array;
+   * 
+   * @param files files Array
+   * @param fps The number of broadcast images per second
+   * @param onPlayFinish finish callback
+   */
   public void loadImage(final File[] files, int fps, OnPlayFinish onPlayFinish) {
     if (imageCache == null) {
       imageCache = new ImageCache();
@@ -103,14 +135,30 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
     load(files);
   }
 
-  public void loadImage(@RawRes int[] res, int width, int height, int fps,
+  /**
+   * load frame form file resources Array;
+   * 
+   * @param resArray resources Array
+   * @param width request width
+   * @param height request height
+   * @param fps The number of broadcast images per second
+   * @param onPlayFinish finish callback
+   */
+  public void loadImage(@RawRes int[] resArray, int width, int height, int fps,
       OnPlayFinish onPlayFinish) {
     this.width = width;
     this.height = height;
-    loadImage(res, fps, onPlayFinish);
+    loadImage(resArray, fps, onPlayFinish);
   }
 
-  public void loadImage(@RawRes int[] res, int fps, OnPlayFinish onPlayFinish) {
+  /**
+   * load frame form file resources Array;
+   * 
+   * @param resArray resources Array
+   * @param fps The number of broadcast images per second
+   * @param onPlayFinish finish callback
+   */
+  public void loadImage(@RawRes int[] resArray, int fps, OnPlayFinish onPlayFinish) {
     if (imageCache == null) {
       imageCache = new ImageCache();
     }
@@ -118,22 +166,23 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
     index = 0;
     frameTime = 1000f / fps + 0.5f;
     WorkHandler.getInstance().addMessageProxy(this);
-    load(res);
+    load(resArray);
   }
 
 
-//  private File copyToFileFromResource(int id, String filePath) {
-//    File localeFile = new File(filePath);
-//    if (localeFile.exists()) {
-//      return localeFile;
-//    } else {
-//      InputStream inputStream = getResources()
-//          .openRawResource(id);
-//      copyFile(inputStream, filePath);
-//    }
-//
-//    return localeFile;
-//  }
+  // private File copyToFileFromResource(int id, String filePath) {
+  // File localeFile = new File(filePath);
+  // if (localeFile.exists()) {
+  // return localeFile;
+  // } else {
+  // InputStream inputStream = getResources()
+  // .openRawResource(id);
+  // copyFile(inputStream, filePath);
+  // }
+  //
+  // return localeFile;
+  // }
+
 
   private void load(final File[] files) {
     Message message = Message.obtain();
@@ -194,24 +243,24 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
       // 边读边写 展示(同时读取下一张)-->直接再读取下一张
       int resId = resIds[index];
 
-//      int key = getResources().getResourceName(resId).hashCode();
-//      String path = Environment.getExternalStorageDirectory().getAbsolutePath()
-//          + File.separator + key;
-//      File file = copyToFileFromResource(resId, path);
+      // int key = getResources().getResourceName(resId).hashCode();
+      // String path = Environment.getExternalStorageDirectory().getAbsolutePath()
+      // + File.separator + key;
+      // File file = copyToFileFromResource(resId, path);
 
 
       if (bitmapDrawable != null) {// 上一张直接复用
         imageCache.mReusableBitmaps.add(new SoftReference<>(bitmapDrawable.getBitmap()));
       }
       long start = System.currentTimeMillis();
-       bitmapDrawable =
-       BitmapLoadUtils.decodeSampledBitmapFromRes(getContext().getResources(), resId, width,
-       height,
-       imageCache);
-//      bitmapDrawable =
-//          BitmapLoadUtils.decodeSampledBitmapFromFile(file.getAbsolutePath(), width,
-//              height,
-//              imageCache);
+      bitmapDrawable =
+          BitmapLoadUtils.decodeSampledBitmapFromRes(getContext().getResources(), resId, width,
+              height,
+              imageCache);
+      // bitmapDrawable =
+      // BitmapLoadUtils.decodeSampledBitmapFromFile(file.getAbsolutePath(), width,
+      // height,
+      // imageCache);
       long end = System.currentTimeMillis();
       frameTime = (frameTime - (end - start)) > 0 ? (frameTime - (end - start)) : 0;
       Message message = Message.obtain();
