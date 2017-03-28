@@ -16,7 +16,7 @@ project build.gradle加入jitpack
 项目的build.gradle加入
 ```
 	dependencies {
-	        compile 'com.github.Mr-wangyong:ImageFrame:V1.0.1'
+	        compile 'com.github.Mr-wangyong:ImageFrame:v1.0.0'
 	}
 ```
 然后,直接使用自定义的ImageFrameView;
@@ -79,7 +79,15 @@ private void loadDir(ImageFrameView imageFrame) {
     });
   }
 ```
-
+## V1.1更新
+1. 增加循环播放功能(去掉了Lru缓存功能)
+```
+imageFrame.setLoop(true);
+```
+2. 增加停止播放功能
+```
+imageFrame.stop();
+```
 
 ---
 
@@ -100,8 +108,8 @@ private void loadDir(ImageFrameView imageFrame) {
 (3)采用本项目后,x9007上内存占用如下:
 ![image](cache.png)
 
-3.项目中踩过的坑:
-
+## 项目中踩过的坑:
+1. 关于bitmap的解析
 ```
 BitmapFactory.decodeResource
 ```
@@ -114,9 +122,10 @@ decodeStream(resources.openRawResource(resId),null,options)
 ```
 代替BitmapFactory.decodeResource
 
+2. 关于LruCache图片复用问题
+1.0.1版本按照官方实例LRU缓存每次解析的图片,1.1.0版本增加loop功能发现无法循环播放,经过大量分析,发现lru缓存逻辑有问题,下次进入即使拿不同的key返回相同的bitmap,故去掉了缓存,经测试,不影响内存占用及性能.
+
 
 ## 参考:
 官网 关于Bitmap复用:
 > https://developer.android.com/training/displaying-bitmaps/manage-memory.html#recycle
-
-

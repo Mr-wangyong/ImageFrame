@@ -47,11 +47,11 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
 
     }
   };
-  private float frameTime;
-  private int index;
-  private BitmapDrawable bitmapDrawable;
+  private volatile float frameTime;
+  private volatile int index;
+  private volatile BitmapDrawable bitmapDrawable;
   private OnPlayFinish onPlayFinish;
-
+  private boolean loop;
 
 
   public ImageFrameView(Context context) {
@@ -68,7 +68,7 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
 
   /**
    * load frame form file directory;
-   * 
+   *
    * @param width request width
    * @param height request height
    * @param fileDir file directory
@@ -84,7 +84,7 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
 
   /**
    * load frame form file directory;
-   * 
+   *
    * @param fileDir file directory
    * @param fps The number of broadcast images per second
    * @param onPlayFinish finish callback
@@ -102,7 +102,7 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
 
   /**
    * load frame form file files Array;
-   * 
+   *
    * @param width request width
    * @param height request height
    * @param files files Array
@@ -119,7 +119,7 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
 
   /**
    * load frame form file files Array;
-   * 
+   *
    * @param files files Array
    * @param fps The number of broadcast images per second
    * @param onPlayFinish finish callback
@@ -137,7 +137,7 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
 
   /**
    * load frame form file resources Array;
-   * 
+   *
    * @param resArray resources Array
    * @param width request width
    * @param height request height
@@ -153,7 +153,7 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
 
   /**
    * load frame form file resources Array;
-   * 
+   *
    * @param resArray resources Array
    * @param fps The number of broadcast images per second
    * @param onPlayFinish finish callback
@@ -170,19 +170,22 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
   }
 
 
-  // private File copyToFileFromResource(int id, String filePath) {
-  // File localeFile = new File(filePath);
-  // if (localeFile.exists()) {
-  // return localeFile;
-  // } else {
-  // InputStream inputStream = getResources()
-  // .openRawResource(id);
-  // copyFile(inputStream, filePath);
-  // }
-  //
-  // return localeFile;
-  // }
+  /**
+   * loop play frame
+   * 
+   * @param loop true is loop
+   */
+  public void setLoop(boolean loop) {
+    this.loop = loop;
+  }
 
+  /**
+   * stop play frame
+   */
+  public void stop() {
+    WorkHandler.getInstance().getHanler().removeCallbacksAndMessages(null);
+    handler.removeCallbacksAndMessages(null);
+  }
 
   private void load(final File[] files) {
     Message message = Message.obtain();
@@ -199,40 +202,46 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
   }
 
 
-
   private void loadInThreadFromFile(final File[] files) {
-    Log.d(TAG, "loadInThread thread=" + Thread.currentThread().getName());
     if (index < files.length) {
-      // 边读边写 展示(同时读取下一张)-->直接再读取下一张
       File file = files[index];
       if (file.isFile() && isPicture(file)) {
-        if (bitmapDrawable != null) {// 上一张直接复用
+        if (bitmapDrawable != null) {
           imageCache.mReusableBitmaps.add(new SoftReference<>(bitmapDrawable.getBitmap()));
         }
+        Log.d(TAG, "name=" + file.getAbsolutePath() + " loadInThread thread="
+            + Thread.currentThread().getName() + " id="
+            + Thread.currentThread().getId());
         long start = System.currentTimeMillis();
         bitmapDrawable =
             BitmapLoadUtils.decodeSampledBitmapFromFile(file.getAbsolutePath(), width, height,
                 imageCache);
         long end = System.currentTimeMillis();
-        frameTime = (frameTime - (end - start)) > 0 ? (frameTime - (end - start)) : 0;
+        float updateTime = (frameTime - (end - start)) > 0 ? (frameTime - (end - start)) : 0;
         Message message = Message.obtain();
         message.what = FILE;
         message.obj = files;
         handler.sendMessageAtTime(message,
-            index == 0 ? 0 : (int) (SystemClock.uptimeMillis() + frameTime));
+            index == 0 ? 0 : (int) (SystemClock.uptimeMillis() + updateTime));
         index++;
       } else {
         index++;
         loadInThreadFromFile(files);
       }
     } else {
-      index++;
-      bitmapDrawable = null;
-      frameTime = 0;
-      if (onPlayFinish != null) {
-        onPlayFinish.onPlayFinish();
+      if (loop) {
+        index = 0;
+        loadInThreadFromFile(files);
+      } else {
+        index++;
+        bitmapDrawable = null;
+        frameTime = 0;
+        if (onPlayFinish != null) {
+          onPlayFinish.onPlayFinish();
+        }
+        onPlayFinish = null;
       }
-      onPlayFinish = null;
+
     }
   }
 
@@ -240,16 +249,8 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
   private void loadInThreadFromRes(final int[] resIds) {
     Log.d(TAG, "loadInThread thread=" + Thread.currentThread().getName());
     if (index < resIds.length) {
-      // 边读边写 展示(同时读取下一张)-->直接再读取下一张
       int resId = resIds[index];
-
-      // int key = getResources().getResourceName(resId).hashCode();
-      // String path = Environment.getExternalStorageDirectory().getAbsolutePath()
-      // + File.separator + key;
-      // File file = copyToFileFromResource(resId, path);
-
-
-      if (bitmapDrawable != null) {// 上一张直接复用
+      if (bitmapDrawable != null) {
         imageCache.mReusableBitmaps.add(new SoftReference<>(bitmapDrawable.getBitmap()));
       }
       long start = System.currentTimeMillis();
@@ -257,26 +258,28 @@ public class ImageFrameView extends View implements WorkHandler.WorkMessageProxy
           BitmapLoadUtils.decodeSampledBitmapFromRes(getContext().getResources(), resId, width,
               height,
               imageCache);
-      // bitmapDrawable =
-      // BitmapLoadUtils.decodeSampledBitmapFromFile(file.getAbsolutePath(), width,
-      // height,
-      // imageCache);
       long end = System.currentTimeMillis();
-      frameTime = (frameTime - (end - start)) > 0 ? (frameTime - (end - start)) : 0;
+      float updateTime = (frameTime - (end - start)) > 0 ? (frameTime - (end - start)) : 0;
       Message message = Message.obtain();
       message.what = RES;
       message.obj = resIds;
       handler.sendMessageAtTime(message,
-          index == 0 ? 0 : (int) (SystemClock.uptimeMillis() + frameTime));
+          index == 0 ? 0 : (int) (SystemClock.uptimeMillis() + updateTime));
       index++;
     } else {
-      index++;
-      bitmapDrawable = null;
-      frameTime = 0;
-      if (onPlayFinish != null) {
-        onPlayFinish.onPlayFinish();
+      if (loop) {
+        index = 0;
+        loadInThreadFromRes(resIds);
+      } else {
+        index++;
+        bitmapDrawable = null;
+        frameTime = 0;
+        if (onPlayFinish != null) {
+          onPlayFinish.onPlayFinish();
+        }
+        onPlayFinish = null;
       }
-      onPlayFinish = null;
+
     }
   }
 

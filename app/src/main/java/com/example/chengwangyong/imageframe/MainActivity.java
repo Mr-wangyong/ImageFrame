@@ -24,14 +24,14 @@ public class MainActivity extends AppCompatActivity {
 
     start = System.currentTimeMillis();
 
-     //loadDir(imageFrame);
+    // loadDir(imageFrame);
 
-    // loadFile(imageFrame);
+    //loadFile(imageFrame);
     loadRes(imageFrame);
   }
 
-  private void loadRes(ImageFrameView imageFrame) {
-    int[] resIds = new int[210];
+  private void loadRes(final ImageFrameView imageFrame) {
+    final int[] resIds = new int[210];
     Resources res = getResources();
     final String packageName = getPackageName();
     for (int i = 0; i < resIds.length; i++) {
@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
       resIds[i] = imageResId;
       Log.e("TAG", "imageResId=" + imageResId);
     }
+    imageFrame.setLoop(true);
     imageFrame.loadImage(resIds, 30, new ImageFrameView.OnPlayFinish() {
       @Override
       public void onPlayFinish() {
@@ -47,13 +48,14 @@ public class MainActivity extends AppCompatActivity {
     });
   }
 
-  private void loadFile(ImageFrameView imageFrame) {
-    File dir = new File(testDir);
+  private void loadFile(final ImageFrameView imageFrame) {
+    final File dir = new File(testDir);
     if (dir.isDirectory()) {
+      imageFrame.setLoop(true);
       imageFrame.loadImage(dir.listFiles(), 30, new ImageFrameView.OnPlayFinish() {
         @Override
         public void onPlayFinish() {
-          Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start));
+          Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start)+" thread="+Thread.currentThread().getName());
         }
       });
     }

@@ -26,17 +26,13 @@ public class BitmapLoadUtils {
     options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
 
-    BitmapDrawable bitmapFromCache = cache.getBitmapFromCache(filename);
-    if (bitmapFromCache == null) {
-      // if (Utils.hasHoneycomb()) {
-      addInBitmapOptions(options, cache);
-      // }
-      // If we're running on Honeycomb or newer, try to use inBitmap.
-      options.inJustDecodeBounds = false;
-      bitmapFromCache = new BitmapDrawable(BitmapFactory.decodeFile(filename, options));
-      cache.addBitmap(filename, bitmapFromCache);
-    }
-    return bitmapFromCache;
+    ;
+    addInBitmapOptions(options, cache);
+    // }
+    // If we're running on Honeycomb or newer, try to use inBitmap.
+    options.inJustDecodeBounds = false;
+    // cache.addBitmap(filename, bitmapFromCache);
+    return new BitmapDrawable(BitmapFactory.decodeFile(filename, options));
   }
 
   public static BitmapDrawable decodeSampledBitmapFromRes(Resources resources, @RawRes int resId,
@@ -45,22 +41,18 @@ public class BitmapLoadUtils {
 
     final BitmapFactory.Options options = new BitmapFactory.Options();
     options.inJustDecodeBounds = true;
-    decodeStream(resources.openRawResource(resId),null,options);
+    decodeStream(resources.openRawResource(resId), null, options);
     options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
     String resourceName = resources.getResourceName(resId);
-    BitmapDrawable bitmapFromCache = cache.getBitmapFromCache(resourceName);
-    if (bitmapFromCache == null) {
-      // if (Utils.hasHoneycomb()) {
-      addInBitmapOptions(options, cache);
-      // }
-      // If we're running on Honeycomb or newer, try to use inBitmap.
-      options.inJustDecodeBounds = false;
-      bitmapFromCache =
-          new BitmapDrawable(resources,
-              decodeStream(resources.openRawResource(resId),null,options));
-      cache.addBitmap(resourceName, bitmapFromCache);
-    }
+    // if (Utils.hasHoneycomb()) {
+    addInBitmapOptions(options, cache);
+    // }
+    // If we're running on Honeycomb or newer, try to use inBitmap.
+    options.inJustDecodeBounds = false;
+    BitmapDrawable bitmapFromCache =
+        new BitmapDrawable(resources,
+            decodeStream(resources.openRawResource(resId), null, options));
     return bitmapFromCache;
   }
 

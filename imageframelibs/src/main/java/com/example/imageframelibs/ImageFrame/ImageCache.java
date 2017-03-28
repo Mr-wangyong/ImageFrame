@@ -2,9 +2,7 @@ package com.example.imageframelibs.ImageFrame;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.util.LruCache;
 
 import java.lang.ref.SoftReference;
 import java.util.Collections;
@@ -20,23 +18,11 @@ import java.util.Set;
 public class ImageCache {
 
   final Set<SoftReference<Bitmap>> mReusableBitmaps;
-  private LruCache<String, BitmapDrawable> mMemoryCache;
 
   public ImageCache() {
     mReusableBitmaps =
         Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
-    long memCacheSize = Runtime.getRuntime().freeMemory() / 100;
-    // If you're running on Honeycomb or newer, create a
-    // synchronized HashSet of references to reusable bitmaps.
-    mMemoryCache = new LruCache<String, BitmapDrawable>((int) memCacheSize) {
 
-      // Notify the removed entry that is no longer being cached.
-      @Override
-      protected void entryRemoved(boolean evicted, String key,
-                                  BitmapDrawable oldValue, BitmapDrawable newValue) {
-        mReusableBitmaps.add(new SoftReference<>(oldValue.getBitmap()));
-      }
-    };
   }
 
   // This method iterates through the reusable bitmaps, looking for one
@@ -105,13 +91,5 @@ public class ImageCache {
       return 1;
     }
     return 1;
-  }
-
-  public BitmapDrawable getBitmapFromCache(String filename) {
-    return mMemoryCache.get(filename);
-  }
-
-  public void addBitmap(String filename, BitmapDrawable bitmapFromCache) {
-    mMemoryCache.put(filename, bitmapFromCache);
   }
 }
