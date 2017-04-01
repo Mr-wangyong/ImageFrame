@@ -94,7 +94,7 @@ imageFrame.stop();
 ## 二 项目说明:
 1. 项目最早是源于腾讯的一篇文章
 
-> [通过三次优化，我将gif加载优化了16.9%](http://note.youdao.com/)
+> [通过三次优化，我将gif加载优化了16.9%](http://wetest.qq.com/lab/view/277.html)
 
 由于腾讯的文章向来只有描述,从无具体代码,此项目为该文章的具体实现,
 
