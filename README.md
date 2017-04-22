@@ -16,12 +16,15 @@ project build.gradle加入jitpack
 项目的build.gradle加入
 ```
 	dependencies {
-	        compile 'com.github.Mr-wangyong:ImageFrame:V1.0.1'
+	        compile 'com.github.Mr-wangyong:ImageFrame:v1.0.0'
 	}
 ```
 然后,直接使用自定义的ImageFrameView;
 ```
-
+<com.example.imageframelibs.ImageFrame.ImageFrameView
+      android:id="@+id/image_frame"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
 ```
 
 
@@ -91,7 +94,7 @@ imageFrame.stop();
 ## 二 项目说明:
 1. 项目最早是源于腾讯的一篇文章
 
-> [通过三次优化，我将gif加载优化了16.9%](http://wetest.qq.com/lab/view/277.html)
+> [通过三次优化，我将gif加载优化了16.9%](http://note.youdao.com/)
 
 由于腾讯的文章向来只有描述,从无具体代码,此项目为该文章的具体实现,
 
