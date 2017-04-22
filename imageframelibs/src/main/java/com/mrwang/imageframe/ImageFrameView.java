@@ -1,4 +1,4 @@
-package com.example.imageframelibs.ImageFrame;
+package com.mrwang.imageframe;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;

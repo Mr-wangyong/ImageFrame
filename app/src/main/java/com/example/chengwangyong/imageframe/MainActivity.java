@@ -6,10 +6,21 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.imageframelibs.ImageFrame.ImageFrameView;
+import com.mrwang.imageframe.ImageFrameView;
 
 import java.io.File;
 
+/**
+ * 2017.04.22
+ * 任务:探究开启了循环之后为什么不能使用缓存的原因
+ * 1.去掉缓存 每次读取 没问题
+ * 2.去掉inBitmap选项 从缓存中读取 内存占用很高 不合适
+ * 说明开启缓存后 没办法在复用之前的图片内存了
+ *
+ * 二:探究一下apng是否能解
+ *
+ * 
+ */
 public class MainActivity extends AppCompatActivity {
   public String testDir =
       Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -26,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     // loadDir(imageFrame);
 
-    //loadFile(imageFrame);
-    loadRes(imageFrame);
+    loadFile(imageFrame);
+    // loadRes(imageFrame);
   }
 
   private void loadRes(final ImageFrameView imageFrame) {
@@ -55,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
       imageFrame.loadImage(dir.listFiles(), 30, new ImageFrameView.OnPlayFinish() {
         @Override
         public void onPlayFinish() {
-          Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start)+" thread="+Thread.currentThread().getName());
+          Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start) + " thread="
+              + Thread.currentThread().getName());
         }
       });
     }

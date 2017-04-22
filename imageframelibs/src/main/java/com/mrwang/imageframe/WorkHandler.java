@@ -1,11 +1,11 @@
-package com.example.imageframelibs.ImageFrame;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.mrwang.imageframe;
 
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 后台单线程的handler

@@ -1,4 +1,4 @@
-package com.example.imageframelibs.ImageFrame;
+package com.mrwang.imageframe;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -26,13 +26,17 @@ public class BitmapLoadUtils {
     options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
 
-    ;
-    addInBitmapOptions(options, cache);
-    // }
-    // If we're running on Honeycomb or newer, try to use inBitmap.
-    options.inJustDecodeBounds = false;
-    // cache.addBitmap(filename, bitmapFromCache);
-    return new BitmapDrawable(BitmapFactory.decodeFile(filename, options));
+    BitmapDrawable bitmapFromCache = cache.getBitmapFromCache(filename);
+    if (bitmapFromCache == null) {
+      // if (Utils.hasHoneycomb()) {
+      addInBitmapOptions(options, cache);
+      // }
+      // If we're running on Honeycomb or newer, try to use inBitmap.
+      options.inJustDecodeBounds = false;
+      bitmapFromCache = new BitmapDrawable(BitmapFactory.decodeFile(filename, options));
+      cache.addBitmap(filename, bitmapFromCache);
+    }
+    return bitmapFromCache;
   }
 
   public static BitmapDrawable decodeSampledBitmapFromRes(Resources resources, @RawRes int resId,

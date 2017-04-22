@@ -21,10 +21,7 @@ project build.gradle加入jitpack
 ```
 然后,直接使用自定义的ImageFrameView;
 ```
-<com.example.imageframelibs.ImageFrame.ImageFrameView
-      android:id="@+id/image_frame"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+
 ```
 
 
