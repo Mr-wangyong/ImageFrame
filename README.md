@@ -19,16 +19,33 @@ project build.gradle加入jitpack
 	        compile 'com.github.Mr-wangyong:ImageFrame:v1.0.0'
 	}
 ```
-然后,直接使用自定义的ImageFrameView;
+1.直接使用View,在xml文件中加入自定义的ImageFrameView;
 ```
-<com.example.imageframelibs.ImageFrame.ImageFrameView
+<com.mrwang.imageframe.ImageFrameView
       android:id="@+id/image_frame"
       android:layout_width="match_parent"
       android:layout_height="match_parent"/>
 ```
 
+2.只使用图片加载功能,方便对图片进行后处理
+```
+ ImageFrameProxy proxy = new ImageFrameProxy();
+ proxy.loadImage(testDir, 30, new ImageFrameProxy.OnImageLoadListener() {
 
+      @Override
+      public void onImageLoad(BitmapDrawable drawable) {
+        //You can do something of the BitmapDrawable here
+        ViewCompat.setBackground(view, drawable);
+      }
 
+      @Override
+      public void onPlayFinish() {
+        Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start));
+      }
+    });
+```
+
+##以下API对ImageFrameProxy同样适用
 
 1. 从Resource里面读取:
 ```
@@ -91,12 +108,37 @@ imageFrame.stop();
 
 ---
 
-#### V1.2更新
+## V1.2更新
+将图片加载部分抽取成一个模块ImageFrameProxy;API和ImageFrameView一样,ImageFrameView变为一个示例;你可以在获取bitmap后添加更多的处理;
+
+```
+proxy = new ImageFrameProxy();
+proxy.loadImage(testDir, 30, new ImageFrameProxy.OnImageLoadListener() {
+
+      @Override
+      public void onImageLoad(BitmapDrawable drawable) {
+        ViewCompat.setBackground(imageFrame, drawable);
+      }
+
+      @Override
+      public void onPlayFinish() {
+        Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start));
+      }
+    });
+```
+注意:使用proxy请在页面退出时调用proxy.stop()防止内存泄露
+
+```
+@Override
+  protected void onDestroy() {
+    proxy.stop();
+    super.onDestroy();
+  }
+```
 
 
 
 ## 二 项目说明:
-
 1. 项目最早是源于腾讯的一篇文章
 
 > [通过三次优化，我将gif加载优化了16.9%](http://note.youdao.com/)
@@ -128,7 +170,7 @@ decodeStream(resources.openRawResource(resId),null,options)
 代替BitmapFactory.decodeResource
 
 2. 关于LruCache图片复用问题
-   1.0.1版本按照官方实例LRU缓存每次解析的图片,1.1.0版本增加loop功能发现无法循环播放,经过大量分析,发现lru缓存逻辑有问题,下次进入即使拿不同的key返回相同的bitmap,故去掉了缓存,经测试,不影响内存占用及性能.
+1.0.1版本按照官方实例LRU缓存每次解析的图片,1.1.0版本增加loop功能发现无法循环播放,经过大量分析,发现lru缓存逻辑有问题,下次进入即使拿不同的key返回相同的bitmap,故去掉了缓存,经测试,不影响内存占用及性能.
 
 
 ## 参考:
