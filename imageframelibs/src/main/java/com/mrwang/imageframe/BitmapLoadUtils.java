@@ -76,6 +76,8 @@ public class BitmapLoadUtils {
       final int halfWidth = width / 2;
 
       // 在保证解析出的bitmap宽高分别大于目标尺寸宽高的前提下，取可能的inSampleSize的最大值
+      // The maximum value of the inSampleSize can be obtained on the premise of ensuring that the
+      // width and height of the bitmap are larger than the target size
       while ((halfHeight / inSampleSize) > reqHeight
           && (halfWidth / inSampleSize) > reqWidth) {
         inSampleSize *= 2;

@@ -1,23 +1,19 @@
 package com.example.chengwangyong.imageframe;
 
 import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.mrwang.imageframe.ImageFrameProxy;
 import com.mrwang.imageframe.ImageFrameView;
 
 import java.io.File;
 
 /**
- * 2017.04.22
- * 任务:探究开启了循环之后为什么不能使用缓存的原因
- * 1.去掉缓存 每次读取 没问题
- * 2.去掉inBitmap选项 从缓存中读取 内存占用很高 不合适
- * 说明开启缓存后 没办法在复用之前的图片内存了
- *
- * 二:探究一下apng是否能解
  *
  * 
  */
@@ -26,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
       Environment.getExternalStorageDirectory().getAbsolutePath()
           + File.separator + "Android/gift_1_30_12";
   private long start;
+  private ImageFrameProxy proxy;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
     // loadDir(imageFrame);
 
-    loadFile(imageFrame);
-    // loadRes(imageFrame);
+    //loadFile(imageFrame);
+     loadRes(imageFrame);
+
+    proxy = new ImageFrameProxy();
   }
 
   private void loadRes(final ImageFrameView imageFrame) {
@@ -51,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
       Log.e("TAG", "imageResId=" + imageResId);
     }
     imageFrame.setLoop(true);
-    imageFrame.loadImage(resIds, 30, new ImageFrameView.OnPlayFinish() {
+    imageFrame.loadImage(resIds, 30, new ImageFrameProxy.OnImageLoadListener() {
+      @Override
+      public void onImageLoad(BitmapDrawable drawable) {
+        ViewCompat.setBackground(imageFrame, drawable);
+      }
+
       @Override
       public void onPlayFinish() {
         Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start));
@@ -63,7 +67,13 @@ public class MainActivity extends AppCompatActivity {
     final File dir = new File(testDir);
     if (dir.isDirectory()) {
       imageFrame.setLoop(true);
-      imageFrame.loadImage(dir.listFiles(), 30, new ImageFrameView.OnPlayFinish() {
+      imageFrame.loadImage(dir.listFiles(), 30, new ImageFrameProxy.OnImageLoadListener() {
+
+        @Override
+        public void onImageLoad(BitmapDrawable drawable) {
+          ViewCompat.setBackground(imageFrame, drawable);
+        }
+
         @Override
         public void onPlayFinish() {
           Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start) + " thread="
@@ -73,12 +83,39 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  private void loadDir(ImageFrameView imageFrame) {
-    imageFrame.loadImage(testDir, 30, new ImageFrameView.OnPlayFinish() {
+  private void loadDir(final ImageFrameView imageFrame) {
+    imageFrame.loadImage(testDir, 30, new ImageFrameProxy.OnImageLoadListener() {
+
+      @Override
+      public void onImageLoad(BitmapDrawable drawable) {
+        ViewCompat.setBackground(imageFrame, drawable);
+      }
+
       @Override
       public void onPlayFinish() {
         Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start));
       }
     });
+  }
+
+  private void loadDirFromProxy(final ImageFrameView imageFrame) {
+    proxy.loadImage(testDir, 30, new ImageFrameProxy.OnImageLoadListener() {
+
+      @Override
+      public void onImageLoad(BitmapDrawable drawable) {
+        ViewCompat.setBackground(imageFrame, drawable);
+      }
+
+      @Override
+      public void onPlayFinish() {
+        Log.i("TAG", "userTime=" + (System.currentTimeMillis() - start));
+      }
+    });
+  }
+
+  @Override
+  protected void onDestroy() {
+    proxy.stop();
+    super.onDestroy();
   }
 }

@@ -91,7 +91,12 @@ imageFrame.stop();
 
 ---
 
+#### V1.2更新
+
+
+
 ## 二 项目说明:
+
 1. 项目最早是源于腾讯的一篇文章
 
 > [通过三次优化，我将gif加载优化了16.9%](http://note.youdao.com/)
@@ -123,7 +128,7 @@ decodeStream(resources.openRawResource(resId),null,options)
 代替BitmapFactory.decodeResource
 
 2. 关于LruCache图片复用问题
-1.0.1版本按照官方实例LRU缓存每次解析的图片,1.1.0版本增加loop功能发现无法循环播放,经过大量分析,发现lru缓存逻辑有问题,下次进入即使拿不同的key返回相同的bitmap,故去掉了缓存,经测试,不影响内存占用及性能.
+   1.0.1版本按照官方实例LRU缓存每次解析的图片,1.1.0版本增加loop功能发现无法循环播放,经过大量分析,发现lru缓存逻辑有问题,下次进入即使拿不同的key返回相同的bitmap,故去掉了缓存,经测试,不影响内存占用及性能.
 
 
 ## 参考:
