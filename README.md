@@ -16,7 +16,7 @@ project build.gradle加入jitpack
 项目的build.gradle加入
 ```
 	dependencies {
-	        compile 'com.github.Mr-wangyong:ImageFrame:v1.0.0'
+	        compile 'com.github.Mr-wangyong:ImageFrame:V1.2.0'
 	}
 ```
 1.直接使用View,在xml文件中加入自定义的ImageFrameView;
@@ -45,7 +45,7 @@ project build.gradle加入jitpack
     });
 ```
 
-##以下API对ImageFrameProxy同样适用
+## 以下API对ImageFrameProxy同样适用
 
 1. 从Resource里面读取:
 ```
