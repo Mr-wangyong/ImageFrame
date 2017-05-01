@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.mrwang.imageframe.ImageFrameProxy;
 import com.mrwang.imageframe.ImageFrameView;
@@ -28,16 +29,22 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    ImageFrameView imageFrame = (ImageFrameView) findViewById(R.id.image_frame);
+    final ImageFrameView imageFrame = (ImageFrameView) findViewById(R.id.image_frame);
 
     start = System.currentTimeMillis();
 
     // loadDir(imageFrame);
 
     //loadFile(imageFrame);
-     loadRes(imageFrame);
+
 
     proxy = new ImageFrameProxy();
+    imageFrame.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        loadRes(imageFrame);
+      }
+    });
   }
 
   private void loadRes(final ImageFrameView imageFrame) {

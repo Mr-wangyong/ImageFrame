@@ -8,7 +8,6 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.RawRes;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
@@ -19,12 +18,12 @@ import java.lang.ref.SoftReference;
  * Time: 上午11:09
  */
 public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
-  public static final String TAG = "ImageFrameView";
   private static final int FILE = 0;
   private static final int RES = 1;
   private Resources resources;
   private int width;
   private int height;
+  private boolean isLoading;
 
 
   private ImageCache imageCache;
@@ -63,9 +62,13 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
    */
   public void loadImage(final String fileDir, int width, int height, int fps,
       OnImageLoadListener onPlayFinish) {
-    this.width = width;
-    this.height = height;
-    loadImage(fileDir, fps, onPlayFinish);
+    if (!isLoading) {
+      isLoading = true;
+      this.width = width;
+      this.height = height;
+      loadImage(fileDir, fps, onPlayFinish);
+    }
+
   }
 
   /**
@@ -76,8 +79,8 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
    * @param onPlayFinish finish callback
    */
   public void loadImage(final String fileDir, int fps, OnImageLoadListener onPlayFinish) {
-    if (!TextUtils.isEmpty(fileDir) && fps > 0) {
-      Log.d(TAG, "run() called Thread=" + Thread.currentThread().getName());
+    if (!isLoading && !TextUtils.isEmpty(fileDir) && fps > 0) {
+      isLoading = true;
       File dir = new File(fileDir);
       if (dir.exists() && dir.isDirectory()) {
         File[] files = dir.listFiles();
@@ -97,9 +100,13 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
    */
   public void loadImage(final File[] files, int width, int height, int fps,
       OnImageLoadListener onPlayFinish) {
-    this.width = width;
-    this.height = height;
-    loadImage(files, fps, onPlayFinish);
+    if (!isLoading) {
+      isLoading = true;
+      this.width = width;
+      this.height = height;
+      loadImage(files, fps, onPlayFinish);
+    }
+
   }
 
 
@@ -111,14 +118,18 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
    * @param onPlayFinish finish callback
    */
   public void loadImage(final File[] files, int fps, OnImageLoadListener onPlayFinish) {
-    if (imageCache == null) {
-      imageCache = new ImageCache();
+    if (!isLoading) {
+      isLoading = true;
+      if (imageCache == null) {
+        imageCache = new ImageCache();
+      }
+      this.onImageLoadListener = onPlayFinish;
+      index = 0;
+      frameTime = 1000f / fps + 0.5f;
+      WorkHandler.getInstance().addMessageProxy(this);
+      load(files);
     }
-    this.onImageLoadListener = onPlayFinish;
-    index = 0;
-    frameTime = 1000f / fps + 0.5f;
-    WorkHandler.getInstance().addMessageProxy(this);
-    load(files);
+
   }
 
   /**
@@ -132,9 +143,13 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
    */
   public void loadImage(Resources resources, @RawRes int[] resArray, int width, int height, int fps,
       OnImageLoadListener onPlayFinish) {
-    this.width = width;
-    this.height = height;
-    loadImage(resources,resArray, fps, onPlayFinish);
+    if (!isLoading) {
+      isLoading = true;
+      this.width = width;
+      this.height = height;
+      loadImage(resources, resArray, fps, onPlayFinish);
+    }
+
   }
 
   /**
@@ -144,16 +159,21 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
    * @param fps The number of broadcast images per second
    * @param onPlayFinish finish callback
    */
-  public void loadImage(Resources resources,@RawRes int[] resArray, int fps, OnImageLoadListener onPlayFinish) {
-    this.resources = resources;
-    if (imageCache == null) {
-      imageCache = new ImageCache();
+  public void loadImage(Resources resources, @RawRes int[] resArray, int fps,
+      OnImageLoadListener onPlayFinish) {
+    if (!isLoading) {
+      isLoading = true;
+      this.resources = resources;
+      if (imageCache == null) {
+        imageCache = new ImageCache();
+      }
+      this.onImageLoadListener = onPlayFinish;
+      index = 0;
+      frameTime = 1000f / fps + 0.5f;
+      WorkHandler.getInstance().addMessageProxy(this);
+      load(resArray);
     }
-    this.onImageLoadListener = onPlayFinish;
-    index = 0;
-    frameTime = 1000f / fps + 0.5f;
-    WorkHandler.getInstance().addMessageProxy(this);
-    load(resArray);
+
   }
 
 
@@ -163,7 +183,9 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
    * @param loop true is loop
    */
   public ImageFrameProxy setLoop(boolean loop) {
-    this.loop = loop;
+    if (!isLoading) {
+      this.loop = loop;
+    }
     return this;
   }
 
@@ -175,6 +197,7 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
     WorkHandler.getInstance().getHanler().removeCallbacksAndMessages(null);
     handler.removeCallbacksAndMessages(null);
     resources = null;
+    isLoading = false;
   }
 
   private void load(final File[] files) {
@@ -226,6 +249,7 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
         if (onImageLoadListener != null) {
           onImageLoadListener.onPlayFinish();
         }
+        isLoading = false;
         onImageLoadListener = null;
       }
 
@@ -263,6 +287,7 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
         if (onImageLoadListener != null) {
           onImageLoadListener.onPlayFinish();
         }
+        isLoading = false;
         onImageLoadListener = null;
       }
 
