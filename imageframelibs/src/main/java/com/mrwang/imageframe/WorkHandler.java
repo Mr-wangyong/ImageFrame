@@ -14,32 +14,27 @@ import java.util.List;
  * Time: 下午4:39
  */
 public class WorkHandler extends android.os.HandlerThread {
-  private static Handler workHandler = null;
-  private static WorkHandler workThread = null;
+  private Handler workHandler = null;
+  private WorkHandler workThread = null;
 
-  private static List<WorkMessageProxy> messageProxyList;
+  private volatile List<WorkMessageProxy> messageProxyList;
 
-  private WorkHandler() {
+  public WorkHandler() {
     super("WorkHandler", Process.THREAD_PRIORITY_BACKGROUND);
-  }
-
-  public synchronized static WorkHandler getInstance() {
-    if (workHandler == null) {
-      workThread = new WorkHandler();
-      workThread.start();
-      workHandler = new Handler(workThread.getLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-          if (messageProxyList != null) {
-            for (WorkMessageProxy workMessageProxy : messageProxyList) {
-              workMessageProxy.handleMessage(msg);
-            }
+    workThread = this;
+    start();
+    workHandler = new Handler(workThread.getLooper()) {
+      @Override
+      public void handleMessage(Message msg) {
+        if (messageProxyList != null) {
+          for (WorkMessageProxy workMessageProxy : messageProxyList) {
+            workMessageProxy.handleMessage(msg);
           }
         }
-      };
-    }
-    return workThread;
+      }
+    };
   }
+
 
   public void post(Runnable run) {
     workHandler.post(run);
@@ -73,11 +68,11 @@ public class WorkHandler extends android.os.HandlerThread {
     }
   }
 
-	public Handler getHanler() {
-		return workHandler;
-	}
+  public Handler getHandler() {
+    return workHandler;
+  }
 
-	public interface WorkMessageProxy {
+  public interface WorkMessageProxy {
     void handleMessage(Message msg);
   }
 
