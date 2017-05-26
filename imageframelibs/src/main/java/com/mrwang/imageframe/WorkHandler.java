@@ -15,15 +15,13 @@ import java.util.List;
  */
 public class WorkHandler extends android.os.HandlerThread {
   private Handler workHandler = null;
-  private WorkHandler workThread = null;
 
   private volatile List<WorkMessageProxy> messageProxyList;
 
   public WorkHandler() {
     super("WorkHandler", Process.THREAD_PRIORITY_BACKGROUND);
-    workThread = this;
     start();
-    workHandler = new Handler(workThread.getLooper()) {
+    workHandler = new Handler(getLooper()) {
       @Override
       public void handleMessage(Message msg) {
         if (messageProxyList != null) {

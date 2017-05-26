@@ -144,4 +144,5 @@ public class ImageFrameView extends View {
   public void stop() {
     proxy.stop();
   }
+
 }

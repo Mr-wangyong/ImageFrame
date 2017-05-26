@@ -200,6 +200,7 @@ public class ImageFrameProxy implements WorkHandler.WorkMessageProxy {
    */
   public void stop() {
     workHandler.getHandler().removeCallbacksAndMessages(null);
+    workHandler.removeMessageProxy(this);
     handler.removeCallbacksAndMessages(null);
     resources = null;
     isLoading = false;
