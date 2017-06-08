@@ -19,7 +19,7 @@ public class ImageFrameView extends View {
 
   private int height;
   private int width;
-  private ImageFrameProxy proxy;
+  private ImageFrameHandler proxy;
 
   public ImageFrameView(Context context) {
     super(context);
@@ -37,7 +37,7 @@ public class ImageFrameView extends View {
   }
 
   private void init() {
-    proxy = new ImageFrameProxy();
+    proxy = new ImageFrameHandler();
   }
 
   @Override
@@ -62,7 +62,7 @@ public class ImageFrameView extends View {
    * @param onPlayFinish finish callback
    */
   public void loadImage(final String fileDir, int width, int height, int fps,
-      ImageFrameProxy.OnImageLoadListener onPlayFinish) {
+      ImageFrameHandler.OnImageLoadListener onPlayFinish) {
     proxy.loadImage(fileDir, width, height, fps, onPlayFinish);
   }
 
@@ -74,7 +74,7 @@ public class ImageFrameView extends View {
    * @param onPlayFinish finish callback
    */
   public void loadImage(final String fileDir, int fps,
-      ImageFrameProxy.OnImageLoadListener onPlayFinish) {
+      ImageFrameHandler.OnImageLoadListener onPlayFinish) {
     proxy.loadImage(fileDir, fps, onPlayFinish);
   }
 
@@ -88,7 +88,7 @@ public class ImageFrameView extends View {
    * @param onPlayFinish finish callback
    */
   public void loadImage(final File[] files, int width, int height, int fps,
-      ImageFrameProxy.OnImageLoadListener onPlayFinish) {
+      ImageFrameHandler.OnImageLoadListener onPlayFinish) {
     proxy.loadImage(files, width, height, fps, onPlayFinish);
   }
 
@@ -101,7 +101,7 @@ public class ImageFrameView extends View {
    * @param onPlayFinish finish callback
    */
   public void loadImage(final File[] files, int fps,
-      ImageFrameProxy.OnImageLoadListener onPlayFinish) {
+      ImageFrameHandler.OnImageLoadListener onPlayFinish) {
     proxy.loadImage(files, fps, onPlayFinish);
   }
 
@@ -115,7 +115,7 @@ public class ImageFrameView extends View {
    * @param onPlayFinish finish callback
    */
   public void loadImage(Resources resources, @RawRes int[] resArray, int width, int height, int fps,
-      ImageFrameProxy.OnImageLoadListener onPlayFinish) {
+      ImageFrameHandler.OnImageLoadListener onPlayFinish) {
     proxy.loadImage(resources, resArray, width, height, fps, onPlayFinish);
   }
 
@@ -127,7 +127,7 @@ public class ImageFrameView extends View {
    * @param onPlayFinish finish callback
    */
   public void loadImage(@RawRes int[] resArray, int fps,
-      ImageFrameProxy.OnImageLoadListener onPlayFinish) {
+      ImageFrameHandler.OnImageLoadListener onPlayFinish) {
     proxy.loadImage(getResources(),resArray, fps, onPlayFinish);
   }
 

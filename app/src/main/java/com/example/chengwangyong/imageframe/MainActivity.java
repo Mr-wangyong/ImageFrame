@@ -9,7 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.mrwang.imageframe.ImageFrameProxy;
+import com.mrwang.imageframe.ImageFrameCustomView;
+import com.mrwang.imageframe.ImageFrameHandler;
 import com.mrwang.imageframe.ImageFrameView;
 
 import java.io.File;
@@ -23,26 +24,55 @@ public class MainActivity extends AppCompatActivity {
       Environment.getExternalStorageDirectory().getAbsolutePath()
           + File.separator + "Android/gift_1_30_12";
   private long start;
-  private ImageFrameProxy proxy;
+  private ImageFrameHandler proxy;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     final ImageFrameView imageFrame = (ImageFrameView) findViewById(R.id.image_frame);
+    final ImageFrameCustomView imageFrameCustomView = (ImageFrameCustomView) findViewById(R.id.image_custom_frame);
 
     start = System.currentTimeMillis();
 
+
+    View pause = findViewById(R.id.pause);
+    View start = findViewById(R.id.start);
     // loadDir(imageFrame);
 
-    //loadFile(imageFrame);
+    // loadFile(imageFrame);
 
 
-    proxy = new ImageFrameProxy();
-    imageFrame.setOnClickListener(new View.OnClickListener() {
+//    proxy = new ImageFrameHandler();
+//    imageFrame.setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View v) {
+//        loadRes(imageFrame);
+//      }
+//    });
+
+    imageFrameCustomView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        loadRes(imageFrame);
+        loadResBuilder(imageFrameCustomView);
+      }
+    });
+
+    pause.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (imageFrameCustomView.getImageFrameHandler()!=null){
+          imageFrameCustomView.getImageFrameHandler().pause();
+        }
+      }
+    });
+
+    start.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (imageFrameCustomView.getImageFrameHandler()!=null){
+          imageFrameCustomView.getImageFrameHandler().start();
+        }
       }
     });
   }
@@ -57,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
       Log.e("TAG", "imageResId=" + imageResId);
     }
     imageFrame.setLoop(true);
-    imageFrame.loadImage(resIds, 30, new ImageFrameProxy.OnImageLoadListener() {
+    imageFrame.loadImage(resIds, 30, new ImageFrameHandler.OnImageLoadListener() {
       @Override
       public void onImageLoad(BitmapDrawable drawable) {
         ViewCompat.setBackground(imageFrame, drawable);
@@ -70,11 +100,31 @@ public class MainActivity extends AppCompatActivity {
     });
   }
 
+  private void loadResBuilder(final ImageFrameCustomView imageFrame) {
+    final int[] resIds = new int[210];
+    Resources res = getResources();
+    final String packageName = getPackageName();
+    for (int i = 0; i < resIds.length; i++) {
+      int imageResId = res.getIdentifier("gift_" + (i + 1), "drawable", packageName);
+      resIds[i] = imageResId;
+      Log.e("TAG", "imageResId=" + imageResId);
+    }
+
+    ImageFrameHandler build = new ImageFrameHandler.ResourceHandlerBuilder(getResources(), resIds)
+      .setFps(30)
+      .setStartIndex(10)
+      .setEndIndex(210)
+      .setLoop(true)
+      .build();
+
+    imageFrame.startImageFrame(build);
+  }
+
   private void loadFile(final ImageFrameView imageFrame) {
     final File dir = new File(testDir);
     if (dir.isDirectory()) {
       imageFrame.setLoop(true);
-      imageFrame.loadImage(dir.listFiles(), 30, new ImageFrameProxy.OnImageLoadListener() {
+      imageFrame.loadImage(dir.listFiles(), 30, new ImageFrameHandler.OnImageLoadListener() {
 
         @Override
         public void onImageLoad(BitmapDrawable drawable) {
@@ -91,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void loadDir(final ImageFrameView imageFrame) {
-    imageFrame.loadImage(testDir, 30, new ImageFrameProxy.OnImageLoadListener() {
+    imageFrame.loadImage(testDir, 30, new ImageFrameHandler.OnImageLoadListener() {
 
       @Override
       public void onImageLoad(BitmapDrawable drawable) {
@@ -106,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void loadDirFromProxy(final ImageFrameView imageFrame) {
-    proxy.loadImage(testDir, 30, new ImageFrameProxy.OnImageLoadListener() {
+    proxy.loadImage(testDir, 30, new ImageFrameHandler.OnImageLoadListener() {
 
       @Override
       public void onImageLoad(BitmapDrawable drawable) {

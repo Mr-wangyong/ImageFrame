@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    tools:context="com.example.chengwangyong.imageframe.MainActivity">
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:gravity="center"
+  tools:context="com.example.chengwangyong.imageframe.MainActivity">
 
   <com.mrwang.imageframe.ImageFrameView
-      android:id="@+id/image_frame"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+    android:id="@+id/image_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"/>
 
-</LinearLayout>
+  <com.mrwang.imageframe.ImageFrameCustomView
+    android:id="@+id/image_custom_frame"
+    android:layout_width="match_parent"
+    android:background="#cc00ffff"
+    android:layout_height="match_parent"/>
+
+  <Button
+    android:id="@+id/pause"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="pause"/>
+  <Button
+    android:id="@+id/start"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:text="start"/>
+
+</RelativeLayout>
