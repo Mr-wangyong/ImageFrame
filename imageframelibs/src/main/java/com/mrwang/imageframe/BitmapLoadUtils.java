@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.RawRes;
 
 import static android.graphics.BitmapFactory.decodeFile;
@@ -16,9 +17,15 @@ import static android.graphics.BitmapFactory.decodeStream;
  */
 public class BitmapLoadUtils {
 
+  /**
+   * 两种模式
+   * 一种启用缓存 loop后下一次不读取磁盘 但是内存抖动 内存占用大 空间换磁盘 cpu性能 内存抖动
+   * 一种不启用缓存, loop会读取磁盘,占用磁盘资源,但是内存永远是一张图片的内存 内存不抖动
+   *
+   */
   public static BitmapDrawable decodeSampledBitmapFromFile(String filename,
       int reqWidth, int reqHeight,
-      ImageCache cache) {
+      ImageCache cache, boolean isOpenLruCache) {
 
     final BitmapFactory.Options options = new BitmapFactory.Options();
     options.inJustDecodeBounds = true;
@@ -26,38 +33,67 @@ public class BitmapLoadUtils {
     options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
 
-    BitmapDrawable bitmapFromCache = cache.getBitmapFromCache(filename);
-    if (bitmapFromCache == null) {
-      // if (Utils.hasHoneycomb()) {
-      addInBitmapOptions(options, cache);
-      // }
-      // If we're running on Honeycomb or newer, try to use inBitmap.
-      options.inJustDecodeBounds = false;
-      bitmapFromCache = new BitmapDrawable(BitmapFactory.decodeFile(filename, options));
-      cache.addBitmap(filename, bitmapFromCache);
+    BitmapDrawable bitmapFromCache;
+    if (isOpenLruCache) {
+      bitmapFromCache = cache.getBitmapFromCache(filename);
+      if (bitmapFromCache == null) {
+        // if (Utils.hasHoneycomb()) {
+        bitmapFromCache = readBitmapFromFile(filename, cache, options);
+        cache.addBitmap(filename, bitmapFromCache);
+      }
+    } else {
+      bitmapFromCache = readBitmapFromFile(filename, cache, options);
     }
+
+    return bitmapFromCache;
+  }
+
+  @NonNull
+  private static BitmapDrawable readBitmapFromFile(String filename, ImageCache cache,
+      BitmapFactory.Options options) {
+    BitmapDrawable bitmapFromCache;
+    addInBitmapOptions(options, cache);
+    // }
+    // If we're running on Honeycomb or newer, try to use inBitmap.
+    options.inJustDecodeBounds = false;
+    bitmapFromCache = new BitmapDrawable(BitmapFactory.decodeFile(filename, options));
     return bitmapFromCache;
   }
 
   public static BitmapDrawable decodeSampledBitmapFromRes(Resources resources, @RawRes int resId,
       int reqWidth, int reqHeight,
-      ImageCache cache) {
+      ImageCache cache, boolean isOpenLruCache) {
 
     final BitmapFactory.Options options = new BitmapFactory.Options();
     options.inJustDecodeBounds = true;
     decodeStream(resources.openRawResource(resId), null, options);
     options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
-    String resourceName = resources.getResourceName(resId);
+    // String resourceName = resources.getResourceName(resId);
     // if (Utils.hasHoneycomb()) {
+    BitmapDrawable bitmapFromCache;
+    if (isOpenLruCache) {
+      String resourceName = resources.getResourceName(resId);
+      bitmapFromCache = cache.getBitmapFromCache(resourceName);
+      if (bitmapFromCache == null) {
+        // if (Utils.hasHoneycomb()) {
+        bitmapFromCache = readBitmapFromRes(resources, resId, cache, options);
+        cache.addBitmap(resourceName, bitmapFromCache);
+      }
+    } else {
+      bitmapFromCache = readBitmapFromRes(resources, resId, cache, options);
+    }
+    return bitmapFromCache;
+  }
+
+  @NonNull
+  private static BitmapDrawable readBitmapFromRes(Resources resources, @RawRes int resId, ImageCache cache, BitmapFactory.Options options) {
     addInBitmapOptions(options, cache);
     // }
     // If we're running on Honeycomb or newer, try to use inBitmap.
     options.inJustDecodeBounds = false;
-    BitmapDrawable bitmapFromCache =
-        new BitmapDrawable(resources,
-            decodeStream(resources.openRawResource(resId), null, options));
-    return bitmapFromCache;
+    return new BitmapDrawable(resources,
+      decodeStream(resources.openRawResource(resId), null, options));
   }
 
   public static int calculateInSampleSize(

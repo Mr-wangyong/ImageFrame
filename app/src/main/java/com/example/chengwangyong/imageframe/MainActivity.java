@@ -22,7 +22,7 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
   public String testDir =
       Environment.getExternalStorageDirectory().getAbsolutePath()
-          + File.separator + "Android/gift_1_30_12";
+          + File.separator + "360/abc";
   private long start;
   private ImageFrameHandler proxy;
 
@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     final ImageFrameView imageFrame = (ImageFrameView) findViewById(R.id.image_frame);
-    final ImageFrameCustomView imageFrameCustomView = (ImageFrameCustomView) findViewById(R.id.image_custom_frame);
+    final ImageFrameCustomView imageFrameCustomView =
+        (ImageFrameCustomView) findViewById(R.id.image_custom_frame);
 
     start = System.currentTimeMillis();
 
@@ -43,25 +44,26 @@ public class MainActivity extends AppCompatActivity {
     // loadFile(imageFrame);
 
 
-//    proxy = new ImageFrameHandler();
-//    imageFrame.setOnClickListener(new View.OnClickListener() {
-//      @Override
-//      public void onClick(View v) {
-//        loadRes(imageFrame);
-//      }
-//    });
+    // proxy = new ImageFrameHandler();
+    // imageFrame.setOnClickListener(new View.OnClickListener() {
+    // @Override
+    // public void onClick(View v) {
+    // loadRes(imageFrame);
+    // }
+    // });
 
     imageFrameCustomView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         loadResBuilder(imageFrameCustomView);
+        // loadFileBuilder(imageFrameCustomView);
       }
     });
 
     pause.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (imageFrameCustomView.getImageFrameHandler()!=null){
+        if (imageFrameCustomView.getImageFrameHandler() != null) {
           imageFrameCustomView.getImageFrameHandler().pause();
         }
       }
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     start.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (imageFrameCustomView.getImageFrameHandler()!=null){
+        if (imageFrameCustomView.getImageFrameHandler() != null) {
           imageFrameCustomView.getImageFrameHandler().start();
         }
       }
@@ -111,14 +113,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     ImageFrameHandler build = new ImageFrameHandler.ResourceHandlerBuilder(getResources(), resIds)
-      .setFps(30)
-      .setStartIndex(10)
-      .setEndIndex(210)
-      .setLoop(true)
-      .build();
+        // .setStartIndex(10)
+        .setFps(10)
+        .setLoop(true)
+        // .openLruCache(true)
+        .build();
 
     imageFrame.startImageFrame(build);
+
+
   }
+
+  private void loadFileBuilder(final ImageFrameCustomView imageFrame) {
+    // File file =
+    // new File("/storage/sdcard0/blink_thor/gameRes/25/werewolfkill_appear_anim/res_1_8_10_png");
+    File file =
+        new File(testDir);
+    imageFrame.startImageFrame(new ImageFrameHandler.FileHandlerBuilder(file.listFiles())
+        .setFps(40)
+        .setLoop(true)
+        // .openLruCache(true)
+        .build());
+  }
+
+  //
 
   private void loadFile(final ImageFrameView imageFrame) {
     final File dir = new File(testDir);

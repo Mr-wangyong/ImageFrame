@@ -22,6 +22,8 @@ public interface FrameBuild {
 
   public FrameBuild setFps(int fps);
 
+  public FrameBuild openLruCache(boolean isOpenCache);
+
   public FrameBuild setOnImageLoaderListener(ImageFrameHandler.OnImageLoadListener onPlayFinish);
 
   ImageFrameHandler build();

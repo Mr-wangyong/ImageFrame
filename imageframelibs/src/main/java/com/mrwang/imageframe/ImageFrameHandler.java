@@ -37,6 +37,7 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
   private static final int FILE = 0;
   private static final int RES = 1;
   private int type;
+  private boolean isOpenCache;
 
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({FILE, RES})
@@ -284,11 +285,12 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
       if (file.isFile() && isPicture(file)) {
         if (bitmapDrawable != null) {
           imageCache.mReusableBitmaps.add(new SoftReference<>(bitmapDrawable.getBitmap()));
+          Log.i("TAG", "mReusableBitmaps add1");
         }
         long start = System.currentTimeMillis();
         bitmapDrawable =
             BitmapLoadUtils.decodeSampledBitmapFromFile(file.getAbsolutePath(), width, height,
-                imageCache);
+                imageCache, isOpenCache);
         long end = System.currentTimeMillis();
         float updateTime = (frameTime - (end - start)) > 0 ? (frameTime - (end - start)) : 0;
         Message message = Message.obtain();
@@ -331,7 +333,7 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
       bitmapDrawable =
           BitmapLoadUtils.decodeSampledBitmapFromRes(resources, resId, width,
               height,
-              imageCache);
+              imageCache, isOpenCache);
       long end = System.currentTimeMillis();
       float updateTime = (frameTime - (end - start)) > 0 ? (frameTime - (end - start)) : 0;
       Message message = Message.obtain();
@@ -486,6 +488,12 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
     }
 
     @Override
+    public FrameBuild openLruCache(boolean isOpenCache) {
+      imageFrameHandler.openLruCache(isOpenCache);
+      return this;
+    }
+
+    @Override
     public ImageFrameHandler build() {
       if (!imageFrameHandler.isRunning) {
         clip();
@@ -503,7 +511,7 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
 
     @Override
     public FrameBuild clip() {
-      if (startIndex > 0 || endIndex > 0 && startIndex < endIndex) {
+      if (startIndex >= 0 && endIndex > 0 && startIndex < endIndex) {
         files = split(files, startIndex, endIndex);
       }
       return this;
@@ -518,6 +526,10 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
       }
       return ints;
     }
+  }
+
+  private void openLruCache(boolean isOpenCache) {
+    this.isOpenCache = isOpenCache;
   }
 
 
@@ -583,7 +595,7 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
 
     @Override
     public FrameBuild clip() {
-      if (startIndex > 0 || endIndex > 0 && startIndex < endIndex) {
+      if (startIndex >= 0 && endIndex > 0 && startIndex < endIndex) {
         resArray = split(resArray, startIndex, endIndex);
       }
       return this;
@@ -606,6 +618,12 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
     public FrameBuild setFps(int fps) {
       this.fps = fps;
       imageFrameHandler.setFps(fps);// 这里有一个重复计算 后期想个更好的办法支持动态换
+      return this;
+    }
+
+    @Override
+    public FrameBuild openLruCache(boolean isOpenCache) {
+      imageFrameHandler.openLruCache(isOpenCache);
       return this;
     }
 
