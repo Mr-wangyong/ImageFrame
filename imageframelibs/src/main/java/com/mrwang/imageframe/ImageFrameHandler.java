@@ -10,7 +10,6 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.RawRes;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -285,7 +284,6 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
       if (file.isFile() && isPicture(file)) {
         if (bitmapDrawable != null) {
           imageCache.mReusableBitmaps.add(new SoftReference<>(bitmapDrawable.getBitmap()));
-          Log.i("TAG", "mReusableBitmaps add1");
         }
         long start = System.currentTimeMillis();
         bitmapDrawable =
@@ -324,7 +322,6 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
 
   private void loadInThreadFromRes(final int[] resIds) {
     if (index < resIds.length) {
-      Log.e("TAG", "loadInThreadFromRes index=" + index);
       int resId = resIds[index];
       if (bitmapDrawable != null) {
         imageCache.mReusableBitmaps.add(new SoftReference<>(bitmapDrawable.getBitmap()));

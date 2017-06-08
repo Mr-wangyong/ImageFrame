@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.util.LruCache;
 
 import java.lang.ref.SoftReference;
@@ -31,14 +30,13 @@ public class ImageCache {
     // synchronized HashSet of references to reusable bitmaps.
     mMemoryCache = new LruCache<String, BitmapDrawable>((int) memCacheSize) {
 
-      // Notify the removed entry that is no longer being cached.
-      @Override
-      protected void entryRemoved(boolean evicted, String key,
-          BitmapDrawable oldValue, BitmapDrawable newValue) {
-        //Log.i("TAG","mReusableBitmaps add2");
-        //mReusableBitmaps.add(new SoftReference<>(oldValue.getBitmap()));
-      }
-
+//      // Notify the removed entry that is no longer being cached.
+//      @Override
+//      protected void entryRemoved(boolean evicted, String key,
+//          BitmapDrawable oldValue, BitmapDrawable newValue) {
+//        //Log.i("TAG","mReusableBitmaps add2");
+//        //mReusableBitmaps.add(new SoftReference<>(oldValue.getBitmap()));
+//      }
       @Override
       protected int sizeOf(String key, BitmapDrawable value) {
         return value.getBitmap().getByteCount();
@@ -63,14 +61,12 @@ public class ImageCache {
             // Check to see it the item can be used for inBitmap.
             if (canUseForInBitmap(item, options)) {
               bitmap = item;
-              Log.i("TAG","mReusableBitmaps remove");
               // Remove from reusable set so it can't be used again.
               iterator.remove();
               break;
             }
           } else {
             // Remove from the set if the reference has been cleared.
-            Log.i("TAG","mReusableBitmaps remove");
             iterator.remove();
           }
         }

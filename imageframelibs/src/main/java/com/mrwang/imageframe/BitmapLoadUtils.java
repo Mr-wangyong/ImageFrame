@@ -60,9 +60,9 @@ public class BitmapLoadUtils {
     return bitmapFromCache;
   }
 
-  public static BitmapDrawable decodeSampledBitmapFromRes(Resources resources, @RawRes int resId,
-      int reqWidth, int reqHeight,
-      ImageCache cache, boolean isOpenLruCache) {
+  static BitmapDrawable decodeSampledBitmapFromRes(Resources resources, @RawRes int resId,
+                                                   int reqWidth, int reqHeight,
+                                                   ImageCache cache, boolean isOpenLruCache) {
 
     final BitmapFactory.Options options = new BitmapFactory.Options();
     options.inJustDecodeBounds = true;
@@ -96,8 +96,8 @@ public class BitmapLoadUtils {
       decodeStream(resources.openRawResource(resId), null, options));
   }
 
-  public static int calculateInSampleSize(
-      BitmapFactory.Options options, int reqWidth, int reqHeight) {
+  private static int calculateInSampleSize(
+    BitmapFactory.Options options, int reqWidth, int reqHeight) {
     // 原始图片的宽高
     if (reqHeight == 0 || reqWidth == 0) {
       return 1;
