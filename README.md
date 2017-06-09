@@ -1,4 +1,5 @@
 # ImageFrame
+[中文ReadMe](README_chinese.md)
 >Efficient memory province to play the serial frame control, support from the file, resource read sequence frames, memory reuse, read multiple, just a picture of memory, streaming API, a line of code can achieve serial frame animation
 
 ## 一 Project description:
