@@ -84,24 +84,35 @@ build.setEndIndex(10)
 
 - Read from file:
 
-  1. * * simple pattern * *, you can create a custom View, encapsulate these functions, [ImageFrameCustomView] (https://github.com/Mr-wangyong/ImageFrame/blob/master/app/src/main/java/com/example/chengwangyong/imageframe/ImageFrameCustomView.java), I'm here to give you the implementation (of course, suggestions according to the requirements of the project definition of a better and more practical), can directly call the `startImageFrame`
-  method on frame animation sequence
-  imageFrame.startImageFrame(new ImageFrameHandler.FileHandlerBuilder(file.listFiles())
-          .setFps(40)// Set FPS (how many frames per second to play, suggest no more than 30, default 30 is too large, device performance is not enough, disk may not read, lost frames)
-          .setWidth(100)// Set the width of the picture. You must set it internally, otherwise it will not
-          .setHeight(300)// Set image height must not be ibid
-          .setStartIndex(10)// Sets the beginning of the sequence frame picture index, which can be specified starting from that picture
-          .setEndIndex(30)// Set the end of the sequence frame picture index, which can be specified from the end of that picture
-          .setLoop(true)// Set whether to loop playback
-          .openLruCache(true)// Sets whether or not to open the LRU cache. If not, it is not recommended to open the loop. If the loop is recommended, it is open, but the performance of several tests is not very differen
-          .build());// build
-  ```
+  1.  **simple pattern**, you can create a custom View, encapsulate these functions,[ImageFrameCustomView](https://github.com/Mr-wangyong/ImageFrame/blob/master/app/src/main/java/com/example/chengwangyong/imageframe/ImageFrameCustomView.java), I'm here to give you the implementation (of course, suggestions according to the requirements of the project definition of a better and more practical), can directly call the `startImageFrame`method on frame animation sequence
 
-  2. * * custom mode * * *, any View, more custom control loading process;
+     ```
+     imageFrame.startImageFrame(new ImageFrameHandler.FileHandlerBuilder(file.listFiles())
+     	.setFps(40)// Set FPS (how many frames per second to play, suggest no more than 30, default 30 is too large, device performance is not enough, disk may not read, lost frames)
 
-  ```
-  File file =
-          new File(testDir);
+       .setWidth(100)// Set the width of the picture. You must set it internally, otherwise it will not
+
+       .setHeight(300)// Set image height must not be ibid
+
+       .setStartIndex(10)// Sets the beginning of the sequence frame picture index, which can be specified starting from that picture
+
+       .setEndIndex(30)// Set the end of the sequence frame picture index, which can be specified from the end of that picture
+
+       .setLoop(true)// Set whether to loop playback
+
+       .openLruCache(true)// Sets whether or not to open the LRU cache. If not, it is not recommended to open the loop. If the loop is recommended, it is open, but the performance of several tests is not very differen
+
+       .build());// build
+
+     ```
+
+     ​
+
+
+  2. * 2. **custom mode**, any View, more custom control loading process;
+
+  ​
+        File file =  new File(testDir);
       //Create a FileHandlerBuilder that is similar to API and Android system AlertDialog
       ImageFrameHandler build = new ImageFrameHandler.FileHandlerBuilder(file.listFiles())
       //File[] must be passed in as a processing source
@@ -123,17 +134,15 @@ build.setEndIndex(10)
               //Set the picture for your View
              ViewCompat.setBackground(view,drawable);
             }
-
+      
             @Override
             public void onPlayFinish() {
-
+      
             }
           })
           .build();// Build a Handler to handle
-
+      
       build.start();//Begin to play sequence frames
-  ```
-
   ​
 
  Of course, you can also have `stop`, `pause`, and more freely control the loading process;
