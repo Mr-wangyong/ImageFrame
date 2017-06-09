@@ -47,7 +47,7 @@ project build.gradle加入**jitpack**仓库
 ```
 
 
-#### V1.3 重大更新,流式API,指定播放位置,暂停,专注于序列帧解析,更强大的自定义功能;
+## V1.3 重大更新,流式API,指定播放位置,暂停,专注于序列帧解析,更强大的自定义功能;
 
 ​	项目进行重构,部分API已标记为过时`@Deprecated`,不建议使用,结构改为`ImageFrameHandler`负责处理序列帧加载,通过回调`OnImageLoadListener`
 

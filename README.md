@@ -48,7 +48,7 @@ add the plugin to your buildscript:
 ```
 
 
-#### V1.3 Significant updates, streaming API, specify playback locations, pause, focus on sequence frame parsing, and more powerful custom features
+## V1.3 Significant updates, streaming API, specify playback locations, pause, focus on sequence frame parsing, and more powerful custom features
 
 ​	 The project is refactoring, and part of the API is marked as obsolete. `@Deprecated` is not recommended, and the structure instead of `ImageFrameHandler` is responsible for handling sequence frame loading through callback `OnImageLoadListener`
    Return the `BitmapDrawable` to the external View settings picture, focus on sequence frame processing, easy for external free custom operation; at the same time, API reference `AlertDialog` flow type API, more concise and easy to use;
