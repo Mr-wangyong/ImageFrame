@@ -1,4 +1,4 @@
-package com.mrwang.imageframe;
+package com.example.chengwangyong.imageframe;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.mrwang.imageframe.ImageFrameHandler;
 
 /**
  * 序列帧解析分离,需要的时候只需要传入一个解析器即可
@@ -48,7 +50,7 @@ public class ImageFrameCustomView extends View {
     if (this.imageFrameHandler == null) {
       this.imageFrameHandler = imageFrameHandler;
     }else{
-      imageFrameHandler.stop();
+      this.imageFrameHandler.stop();
       this.imageFrameHandler = imageFrameHandler;
     }
     imageFrameHandler.setOnImageLoaderListener(new ImageFrameHandler.OnImageLoadListener() {

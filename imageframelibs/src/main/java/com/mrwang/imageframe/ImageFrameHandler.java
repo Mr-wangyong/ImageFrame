@@ -49,7 +49,7 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
   }
 
   @Deprecated
-  ImageFrameHandler() {
+  public ImageFrameHandler() {
     imageCache = new ImageCache();
     workHandler = new WorkHandler();
   }

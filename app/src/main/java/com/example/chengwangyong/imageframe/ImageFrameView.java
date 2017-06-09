@@ -1,4 +1,4 @@
-package com.mrwang.imageframe;
+package com.example.chengwangyong.imageframe;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.mrwang.imageframe.ImageFrameHandler;
 
 import java.io.File;
 

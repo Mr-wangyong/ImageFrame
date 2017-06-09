@@ -9,9 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.mrwang.imageframe.ImageFrameCustomView;
 import com.mrwang.imageframe.ImageFrameHandler;
-import com.mrwang.imageframe.ImageFrameView;
 
 import java.io.File;
 

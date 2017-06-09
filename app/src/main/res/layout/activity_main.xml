@@ -14,7 +14,7 @@
     android:layout_height="match_parent"
     android:visibility="gone"/>
 
-  <com.mrwang.imageframe.ImageFrameCustomView
+  <com.example.chengwangyong.imageframe.ImageFrameCustomView
     android:id="@+id/image_custom_frame"
     android:layout_width="match_parent"
     android:background="#cc00ffff"
