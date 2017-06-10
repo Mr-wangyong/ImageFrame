@@ -25,18 +25,21 @@ public class ImageCache {
   public ImageCache() {
     mReusableBitmaps =
         Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
-    long memCacheSize = Runtime.getRuntime().freeMemory() / 100;
+    long memCacheSize = Runtime.getRuntime().freeMemory() / 8;
+    if (memCacheSize <= 0) {
+      memCacheSize = 1;
+    }
     // If you're running on Honeycomb or newer, create a
     // synchronized HashSet of references to reusable bitmaps.
     mMemoryCache = new LruCache<String, BitmapDrawable>((int) memCacheSize) {
 
-//      // Notify the removed entry that is no longer being cached.
-//      @Override
-//      protected void entryRemoved(boolean evicted, String key,
-//          BitmapDrawable oldValue, BitmapDrawable newValue) {
-//        //Log.i("TAG","mReusableBitmaps add2");
-//        //mReusableBitmaps.add(new SoftReference<>(oldValue.getBitmap()));
-//      }
+      // // Notify the removed entry that is no longer being cached.
+      // @Override
+      // protected void entryRemoved(boolean evicted, String key,
+      // BitmapDrawable oldValue, BitmapDrawable newValue) {
+      // //Log.i("TAG","mReusableBitmaps add2");
+      // //mReusableBitmaps.add(new SoftReference<>(oldValue.getBitmap()));
+      // }
       @Override
       protected int sizeOf(String key, BitmapDrawable value) {
         return value.getBitmap().getByteCount();
