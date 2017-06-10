@@ -110,8 +110,8 @@ build.setEndIndex(10)
 
 
 2.   **custom mode**, any View, more custom control loading process;
-
-        File file =  new File(testDir);
+	 ```
+      File file =  new File(testDir);
       //Create a FileHandlerBuilder that is similar to API and Android system AlertDialog
       ImageFrameHandler build = new ImageFrameHandler.FileHandlerBuilder(file.listFiles())
       //File[] must be passed in as a processing source
@@ -142,6 +142,7 @@ build.setEndIndex(10)
           .build();// Build a Handler to handle
       
       build.start();//Begin to play sequence frames
+     ```
 
  Of course, you can also have `stop`, `pause`, and more freely control the loading process;
 
