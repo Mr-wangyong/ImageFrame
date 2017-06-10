@@ -54,25 +54,25 @@ add the plugin to your buildscript:
    Return the `BitmapDrawable` to the external View settings picture, focus on sequence frame processing, easy for external free custom operation; at the same time, API reference `AlertDialog` flow type API, more concise and easy to use;
    Increased API:
 
-play
+> play
 
 ```
 build.start();//开始播放序列帧
 ```
 
-pause
+> pause
 
 ```
 build.pause();//暂停播放
 ```
 
-Specifies starting from a frame:
+> Specifies starting from a frame:
 
 ```
 build.setStartIndex(10)
 ```
 
-Specifies to end from a frame:
+> Specifies to end from a frame:
 
 ```
 build.setEndIndex(10)
@@ -109,9 +109,8 @@ build.setEndIndex(10)
      ​
 
 
-  2. * 2. **custom mode**, any View, more custom control loading process;
+2.   **custom mode**, any View, more custom control loading process;
 
-  ​
         File file =  new File(testDir);
       //Create a FileHandlerBuilder that is similar to API and Android system AlertDialog
       ImageFrameHandler build = new ImageFrameHandler.FileHandlerBuilder(file.listFiles())
@@ -143,7 +142,6 @@ build.setEndIndex(10)
           .build();// Build a Handler to handle
       
       build.start();//Begin to play sequence frames
-  ​
 
  Of course, you can also have `stop`, `pause`, and more freely control the loading process;
 
@@ -157,9 +155,9 @@ build.setEndIndex(10)
 
   ​
 
-- 从Resource目录读取:
+- Read from the Resource directory
 
-  原理同上,只是构建的是`ResourceHandlerBuilder`
+  The principle is the same, but the build is`ResourceHandlerBuilder`
 
   ```
   final int[] resIds = new int[210];
