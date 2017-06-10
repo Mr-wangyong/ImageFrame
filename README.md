@@ -203,7 +203,7 @@ Take the picture loading section as a module ImageFrameProxy; API, like ImageFra
 
 
 
-## V1.update
+## V1.1 update
 
 1. Add loop playback function (remove Lru cache function)
 ```
