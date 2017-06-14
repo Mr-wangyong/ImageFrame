@@ -42,7 +42,7 @@ project build.gradle加入**jitpack**仓库
 项目的build.gradle加入
 ```
 	dependencies {
-	        compile 'com.github.Mr-wangyong:ImageFrame:v1.2.0'
+	        compile 'com.github.Mr-wangyong:ImageFrame:v1.3.0'
 	}
 ```
 
