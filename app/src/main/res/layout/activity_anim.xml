@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="com.example.chengwangyong.imageframe.AnimActivity">
+
+  <com.example.chengwangyong.imageframe.ImageFrameCustomView
+    android:id="@+id/count_down"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:layout_centerInParent="true"
+    tools:background="#00aacc"/>
+
+  <com.example.chengwangyong.imageframe.ImageFrameCustomView
+    android:id="@+id/num"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_centerInParent="true"
+    tools:background="#00ccaa"/>
+</RelativeLayout>
