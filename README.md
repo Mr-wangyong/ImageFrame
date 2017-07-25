@@ -48,7 +48,7 @@ project build.gradle add **jitpack**Warehouse
 add the plugin to your buildscript:
 ```
 	dependencies {
-	        compile 'com.github.Mr-wangyong:ImageFrame:v1.2.0'
+	        compile 'com.github.Mr-wangyong:ImageFrame:v1.3.0'
 	}
 ```
 
