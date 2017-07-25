@@ -1,8 +1,13 @@
 # ImageFrame
-[中文ReadMe](README_chinese.md)
+[点我,查看中文ReadMe](README_chinese.md)
+
 >Efficient memory province to play the serial frame control, support from the file, resource read sequence frames, memory reuse, read multiple, just a picture of memory, streaming API, a line of code can achieve serial frame animation
 
 ## 一 Project description:
+
+![image](anim.gif)
+
+
 
 1. The program is designed because of their long live projects, some places use some PNG frames to synthesize some animation needs. Of course, webP and Apng may be good, but also some WebP low version compatibility in Android, Apng in the realization of both memory Android occupy a large, low decoding efficiency, until later see an article of the Tencent
 
