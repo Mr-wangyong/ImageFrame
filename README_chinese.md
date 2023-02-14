@@ -109,7 +109,7 @@ build.setEndIndex(10)
           new File(testDir);
       //创建一个FileHandlerBuilder,API和Android系统AlertDialog相似
       ImageFrameHandler build = new ImageFrameHandler.FileHandlerBuilder(file.listFiles())
-      //必须传入File[]座位处理源
+      //必须传入File[]作为处理源
           .setFps(40)
           // 设置fps(每秒播放多少帧,建议不大于30 默认30 太大了设备性能不够磁盘可能读取不过来丢帧)
           .setWidth(100)
